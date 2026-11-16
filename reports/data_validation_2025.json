@@ -1,0 +1,146 @@
+{
+  "sources": [
+    {
+      "file": "CCDB_Export_10_March_2025_through_April_2025.zip",
+      "sha256": "356822a5e9f295398f2e75bfff25b4760365845432c31e87e689be2c2c0c88ef",
+      "rows": 803073
+    },
+    {
+      "file": "CCDB_Export_11_May_2025_through_June_2025.zip",
+      "sha256": "b7c8475a183e5a01f72aec794d6bc9d8a12a98cce272b3b406d9a0b067479adb",
+      "rows": 827343
+    },
+    {
+      "file": "CCDB_Export_12_July_2025_through_August_2025.zip",
+      "sha256": "dcc75521581b124f13d6d4b62c2947ccd06a017a09b1dfa7ddeb2d73548554fa",
+      "rows": 968761
+    },
+    {
+      "file": "CCDB_Export_13_September_2025_through_October_2025.zip",
+      "sha256": "4a48c4e32ab78d8b1c3c910c4e14a62cd9fb50355e60708c1f85e5601858bc9f",
+      "rows": 1023636
+    },
+    {
+      "file": "CCDB_Export_14_November_2025_through_December_2025.zip",
+      "sha256": "44fd05c01c9e90ae1abd6e0659898ec7362e7a6a53740e6b18a8d0a0ff3749e7",
+      "rows": 1009132
+    },
+    {
+      "file": "CCDB_Export_9_January_2025_through_February_2025.zip",
+      "sha256": "11c18bb0973eed8f5e4f66e2979346af0671a3aefcb5a6b9eec73009d53cff64",
+      "rows": 811019
+    }
+  ],
+  "year": 2025,
+  "seed": 42,
+  "sample_size": 30000,
+  "min_class": 100,
+  "clean_rows": 607931,
+  "drop_counts": {
+    "missing_id": 0,
+    "missing_text": 4220914,
+    "missing_topic": 0,
+    "invalid_date": 0,
+    "outside_year": 0,
+    "duplicate_id": 0,
+    "duplicate_text": 614119
+  },
+  "input_rows": 5442964,
+  "dedup_order": "sorted archive filename, then CSV row order; first valid ID, then first normalized text",
+  "python_version": "3.11.15",
+  "pandas_version": "3.0.6",
+  "numpy_version": "2.4.6",
+  "splits": {
+    "train": {
+      "rows": 21001,
+      "topics": {
+        "Credit reporting or other personal consumer reports": 12322,
+        "Debt collection": 2597,
+        "Checking or savings account": 1627,
+        "Money transfer, virtual currency, or money service": 1357,
+        "Credit card": 1352,
+        "Mortgage": 484,
+        "Vehicle loan or lease": 402,
+        "Student loan": 370,
+        "Payday loan, title loan, personal loan, or advance loan": 269,
+        "Prepaid card": 132,
+        "Debt or credit management": 89
+      },
+      "sha256": "72234b23b6115f47f27c92a2039a9908a7269ccb1ef92b0e1d746a7a85c45fc2"
+    },
+    "val": {
+      "rows": 4500,
+      "topics": {
+        "Credit reporting or other personal consumer reports": 2640,
+        "Debt collection": 556,
+        "Checking or savings account": 349,
+        "Money transfer, virtual currency, or money service": 291,
+        "Credit card": 290,
+        "Mortgage": 104,
+        "Vehicle loan or lease": 86,
+        "Student loan": 79,
+        "Payday loan, title loan, personal loan, or advance loan": 58,
+        "Prepaid card": 28,
+        "Debt or credit management": 19
+      },
+      "sha256": "875d254c4ba50f0c1051c895624be716e5b285c13ba1b5dab516c4652e5b3608"
+    },
+    "test": {
+      "rows": 4499,
+      "topics": {
+        "Credit reporting or other personal consumer reports": 2641,
+        "Debt collection": 557,
+        "Checking or savings account": 348,
+        "Credit card": 290,
+        "Money transfer, virtual currency, or money service": 290,
+        "Mortgage": 104,
+        "Vehicle loan or lease": 86,
+        "Student loan": 79,
+        "Payday loan, title loan, personal loan, or advance loan": 57,
+        "Prepaid card": 28,
+        "Debt or credit management": 19
+      },
+      "sha256": "da0cf7b16c6ef2ea2c87c5ee73b230f0fc967864fd62f5f1c18899a27a237c82"
+    }
+  },
+  "elapsed_seconds": 527.28,
+  "source_downloads": [
+    {
+      "file": "CCDB_Export_9_January_2025_through_February_2025.zip",
+      "url": "https://files.consumerfinance.gov/f/documents/CCDB_Export_9_January_2025_through_February_2025.zip",
+      "bytes": 75475199,
+      "sha256": "11c18bb0973eed8f5e4f66e2979346af0671a3aefcb5a6b9eec73009d53cff64"
+    },
+    {
+      "file": "CCDB_Export_10_March_2025_through_April_2025.zip",
+      "url": "https://files.consumerfinance.gov/f/documents/CCDB_Export_10_March_2025_through_April_2025.zip",
+      "bytes": 68866998,
+      "sha256": "356822a5e9f295398f2e75bfff25b4760365845432c31e87e689be2c2c0c88ef"
+    },
+    {
+      "file": "CCDB_Export_11_May_2025_through_June_2025.zip",
+      "url": "https://files.consumerfinance.gov/f/documents/CCDB_Export_11_May_2025_through_June_2025.zip",
+      "bytes": 74546009,
+      "sha256": "b7c8475a183e5a01f72aec794d6bc9d8a12a98cce272b3b406d9a0b067479adb"
+    },
+    {
+      "file": "CCDB_Export_12_July_2025_through_August_2025.zip",
+      "url": "https://files.consumerfinance.gov/f/documents/CCDB_Export_12_July_2025_through_August_2025.zip",
+      "bytes": 84153614,
+      "sha256": "dcc75521581b124f13d6d4b62c2947ccd06a017a09b1dfa7ddeb2d73548554fa"
+    },
+    {
+      "file": "CCDB_Export_13_September_2025_through_October_2025.zip",
+      "url": "https://files.consumerfinance.gov/f/documents/CCDB_Export_13_September_2025_through_October_2025.zip",
+      "bytes": 67340083,
+      "sha256": "4a48c4e32ab78d8b1c3c910c4e14a62cd9fb50355e60708c1f85e5601858bc9f"
+    },
+    {
+      "file": "CCDB_Export_14_November_2025_through_December_2025.zip",
+      "url": "https://files.consumerfinance.gov/f/documents/CCDB_Export_14_November_2025_through_December_2025.zip",
+      "bytes": 63867562,
+      "sha256": "44fd05c01c9e90ae1abd6e0659898ec7362e7a6a53740e6b18a8d0a0ff3749e7"
+    }
+  ],
+  "validation_date": "2026-11-16"
+}

@@ -1,0 +1,70 @@
+{
+  "validation_date": "2026-11-16",
+  "source_url": "https://files.consumerfinance.gov/f/documents/CCDB_Export_9_January_2025_through_February_2025.zip",
+  "source_rows": 811019,
+  "source_csv_bytes": 491908736,
+  "elapsed_seconds": 49.25,
+  "manifest": {
+    "source_sha256": "b1a6a0d3b5f3a09723da8cce28a595342b586aa1629bbc8ed1e103cb295c8b06",
+    "seed": 42,
+    "sample_size": 30000,
+    "min_class": 100,
+    "clean_rows": 142633,
+    "python_version": "3.11.15",
+    "pandas_version": "3.0.6",
+    "numpy_version": "2.4.6",
+    "splits": {
+      "train": {
+        "rows": 21000,
+        "topics": {
+          "Credit reporting or other personal consumer reports": 11713,
+          "Money transfer, virtual currency, or money service": 3252,
+          "Checking or savings account": 1893,
+          "Debt collection": 1882,
+          "Credit card": 948,
+          "Mortgage": 343,
+          "Student loan": 319,
+          "Vehicle loan or lease": 279,
+          "Payday loan, title loan, personal loan, or advance loan": 164,
+          "Prepaid card": 110,
+          "Debt or credit management": 97
+        },
+        "sha256": "46e21f51ee752a3c5637af73eb572dacaca701c1de722e76def07c59122f28f0"
+      },
+      "val": {
+        "rows": 4501,
+        "topics": {
+          "Credit reporting or other personal consumer reports": 2510,
+          "Money transfer, virtual currency, or money service": 697,
+          "Checking or savings account": 406,
+          "Debt collection": 403,
+          "Credit card": 203,
+          "Mortgage": 74,
+          "Student loan": 68,
+          "Vehicle loan or lease": 60,
+          "Payday loan, title loan, personal loan, or advance loan": 35,
+          "Prepaid card": 24,
+          "Debt or credit management": 21
+        },
+        "sha256": "eb2b673a820d8f69cd074ba9321109d1c8b9f15424ecec8ee5066ca4ad189a38"
+      },
+      "test": {
+        "rows": 4499,
+        "topics": {
+          "Credit reporting or other personal consumer reports": 2510,
+          "Money transfer, virtual currency, or money service": 696,
+          "Checking or savings account": 405,
+          "Debt collection": 404,
+          "Credit card": 203,
+          "Mortgage": 73,
+          "Student loan": 69,
+          "Vehicle loan or lease": 60,
+          "Payday loan, title loan, personal loan, or advance loan": 35,
+          "Prepaid card": 23,
+          "Debt or credit management": 21
+        },
+        "sha256": "f94af8b1defe9820ee981508ffd89a50769666e049d4b28ab58123db45710cca"
+      }
+    }
+  }
+}
