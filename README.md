@@ -1,6 +1,6 @@
 # SupportIQ
 
-SupportIQ is a customer complaint analysis project built one module at a time. Data preparation is implemented. Model training, search, the data question agent, and the dashboard are still planned.
+SupportIQ is a customer complaint analysis project built one module at a time. Data preparation and an initial EDA notebook are implemented. Model training, search, the data question agent, and the dashboard are still planned.
 
 ## Setup
 
@@ -23,6 +23,7 @@ The sources are the six January–December 2025 ZIP exports in the [official CFP
 ```powershell
 python -m data.download
 python -m data.data_prep data/raw/2025 --output data/processed-2025 --year 2025 --size 30000
+python -m data.analytics_prep
 python -m pytest -q
 ```
 
@@ -48,7 +49,15 @@ Whitespace is normalized; case and punctuation are preserved. Products with fewe
 
 Outputs are `train.csv`, `val.csv`, `test.csv`, `cleaned.sqlite`, and `manifest.json`. The manifest records source hashes, drop counts, parameters, library versions, split counts, and split hashes. Keep these together and use the same test file for every model comparison. Nonempty output directories are rejected. After a failed run, choose a fresh directory or remove only the incomplete run yourself.
 
-Raw data and generated outputs stay out of Git. The earlier two-month splits remain in `data/processed`; the full-year outputs are in `data/processed-2025`. Sampling changed for chunked processing, so old and new split hashes are not expected to match.
+Raw data and generated outputs stay out of Git. The earlier two-month splits remain in `data/processed`; the full-year model outputs are in `data/processed-2025`. Sampling changed for chunked processing, so old and new split hashes are not expected to match.
+
+### Analytics population
+
+`data.analytics_prep` makes a separate set of compressed Parquet files in `data/analytics-2025`. It keeps every source row, including rows without narratives and repeated text. The selected source fields are preserved, with dates normalized to ISO format. Narrative text is not rewritten. An invalid date or date outside 2025 stops this export instead of silently dropping a complaint.
+
+`has_narrative` is false for empty or whitespace-only text. `is_duplicate_text` is true for each later occurrence of the same normalized, case-insensitive narrative; blank narratives are not flagged as duplicates. Flags carry across files in the same sorted archive order used by model preparation. The first occurrence stays unflagged. Identical text is not proof that two records describe the same real-world event.
+
+Use these full-row analytics files for business counts and the deduplicated CSV splits for modeling. Parquet lets the notebook read just the metadata columns it needs without loading complaint text. Preserving rows costs additional disk space; compressed column storage keeps that cost lower than another CSV export.
 
 ## Validation
 
@@ -67,15 +76,32 @@ The full-year run on November 16, 2026 read all six archives with Python 3.11.15
 
 The source total equals dropped plus retained rows. Full source and split hashes, individual drop counts, and elapsed time are in [data_validation_2025.json](reports/data_validation_2025.json).
 
+The separate analytics export retains all 5,442,964 source rows, including 1,222,050 with narratives and 614,119 flagged later copies of narrative text. Its file hashes and monthly totals are in [analytics_validation_2025.json](reports/analytics_validation_2025.json). All 13 local tests passed with both real-data outputs present.
+
 The earlier two-month run read 811,019 rows and kept 142,633, then sampled 30,000. Its record is in [data_validation.json](reports/data_validation.json). No models have been trained and no model scores are available.
 
 Tests cover cleaning, sequential drop counts, duplicates across chunks/files, rare-class sampling, repeatability, splits, and invalid inputs. When local outputs exist, tests also verify saved hashes, counts, class coverage, stratification, and duplicate IDs/text across splits. Local-data checks skip in CI because complaint data is not uploaded.
 
 ## Limits
 
-The cleaned population contains usable narratives after deduplication, not all CFPB complaints. Exact repeated text can come from distinct complaints using the same wording. Removing it helps prevent train/test leakage but changes business counts. Company counts are not failure rates: customer base sizes and submission rates are unavailable. Company response categories and timely responses do not prove resolution.
+The model population contains usable narratives after deduplication, not all CFPB complaints. Exact repeated text can come from distinct complaints using the same wording. Model deduplication helps prevent leakage; business counts use all analytics rows instead. Company counts are not failure rates: customer base sizes and submission rates are unavailable. Company response categories and timely responses do not prove resolution.
 
 Deduplication does not catch paraphrases. Random splits do not establish performance on future complaints. Rare-topic mapping uses cleaned label counts to define the dataset before splitting. Learned text preprocessing must use training data only. This module does not add PII masking.
+
+## EDA and business insights
+
+After both data preparation commands finish:
+
+```powershell
+uv pip install -r requirements-eda.txt
+python notebooks/run_eda.py
+```
+
+The runner uses the active Python environment for the notebook kernel. You can also open [eda.ipynb](notebooks/eda.ipynb) in VS Code and select the project's Python 3.11 interpreter.
+
+The notebook reads metadata columns in batches from the full analytics population. It produces monthly counts, product and company tables, recorded response categories, timely-response rates with explicit denominators, and a model-sample balance check. It exports CSV tables, four PNG charts, and [business_insights.md](reports/eda/business_insights.md). It does not print complaint text or claim to measure resolution, sentiment, or urgency.
+
+Notebook execution checks source agreement, row totals, twelve-month coverage, and sample proportions. CI tests data code with small fixtures; it does not download the full dataset or execute the real-data notebook.
 
 ## Docker and CI
 
