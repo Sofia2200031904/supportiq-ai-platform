@@ -1,0 +1,65 @@
+{
+  "year": 2025,
+  "rows": 5442964,
+  "with_narrative": 1222050,
+  "duplicate_text": 614119,
+  "months": {
+    "2025-01": 475783,
+    "2025-02": 335236,
+    "2025-03": 396973,
+    "2025-04": 406100,
+    "2025-05": 415182,
+    "2025-06": 412161,
+    "2025-07": 473191,
+    "2025-08": 495570,
+    "2025-09": 503850,
+    "2025-10": 519786,
+    "2025-11": 496658,
+    "2025-12": 512474
+  },
+  "sources": [
+    {
+      "file": "CCDB_Export_10_March_2025_through_April_2025.zip",
+      "sha256": "356822a5e9f295398f2e75bfff25b4760365845432c31e87e689be2c2c0c88ef",
+      "rows": 803073,
+      "output": "CCDB_Export_10_March_2025_through_April_2025.parquet",
+      "output_sha256": "735760a2a6b486fc4058522129f0a7f63a4b663954002ccbc37e59a9bb956953"
+    },
+    {
+      "file": "CCDB_Export_11_May_2025_through_June_2025.zip",
+      "sha256": "b7c8475a183e5a01f72aec794d6bc9d8a12a98cce272b3b406d9a0b067479adb",
+      "rows": 827343,
+      "output": "CCDB_Export_11_May_2025_through_June_2025.parquet",
+      "output_sha256": "a54a035a8ad248920292e6d267876c704d9f10e3c54879c533fd7ca3f00ef3bc"
+    },
+    {
+      "file": "CCDB_Export_12_July_2025_through_August_2025.zip",
+      "sha256": "dcc75521581b124f13d6d4b62c2947ccd06a017a09b1dfa7ddeb2d73548554fa",
+      "rows": 968761,
+      "output": "CCDB_Export_12_July_2025_through_August_2025.parquet",
+      "output_sha256": "3b26418c7bdab97b9c70dc759cff9bde4ae80f75c01c5d50a4fd162fdf694469"
+    },
+    {
+      "file": "CCDB_Export_13_September_2025_through_October_2025.zip",
+      "sha256": "4a48c4e32ab78d8b1c3c910c4e14a62cd9fb50355e60708c1f85e5601858bc9f",
+      "rows": 1023636,
+      "output": "CCDB_Export_13_September_2025_through_October_2025.parquet",
+      "output_sha256": "5237291ee677ef936b749c08da18a1699af7f7f8d391c354d9db5f170ec13a6a"
+    },
+    {
+      "file": "CCDB_Export_14_November_2025_through_December_2025.zip",
+      "sha256": "44fd05c01c9e90ae1abd6e0659898ec7362e7a6a53740e6b18a8d0a0ff3749e7",
+      "rows": 1009132,
+      "output": "CCDB_Export_14_November_2025_through_December_2025.parquet",
+      "output_sha256": "6072c8416be074cb937e5868858e28b66fd91a3b6de80e9e7cccc9047df2994d"
+    },
+    {
+      "file": "CCDB_Export_9_January_2025_through_February_2025.zip",
+      "sha256": "11c18bb0973eed8f5e4f66e2979346af0671a3aefcb5a6b9eec73009d53cff64",
+      "rows": 811019,
+      "output": "CCDB_Export_9_January_2025_through_February_2025.parquet",
+      "output_sha256": "a6530869e153ede82249a2532102ddefcf4360941ce8bb601bcbc6cdcd0a95f9"
+    }
+  ],
+  "validation_date": "2026-11-16"
+}
