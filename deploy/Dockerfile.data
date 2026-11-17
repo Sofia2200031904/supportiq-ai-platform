@@ -4,6 +4,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY data/*.py ./data/
+COPY ml/*.py ./ml/
 COPY tests/ ./tests/
 
 CMD ["python", "-m", "data.data_prep", "data/raw/complaints.csv"]

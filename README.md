@@ -76,9 +76,9 @@ The full-year run on November 16, 2026 read all six archives with Python 3.11.15
 
 The source total equals dropped plus retained rows. Full source and split hashes, individual drop counts, and elapsed time are in [data_validation_2025.json](reports/data_validation_2025.json).
 
-The separate analytics export retains all 5,442,964 source rows, including 1,222,050 with narratives and 614,119 flagged later copies of narrative text. Its file hashes and monthly totals are in [analytics_validation_2025.json](reports/analytics_validation_2025.json). All 13 local tests passed with both real-data outputs present.
+The separate analytics export retains all 5,442,964 source rows, including 1,222,050 with narratives and 614,119 flagged later copies of narrative text. Its file hashes and monthly totals are in [analytics_validation_2025.json](reports/analytics_validation_2025.json). The current suite passed all 21 local tests, including exhaustive verification of the refined sample's saved similarity vectors. Real-data checks are skipped in CI because the data files stay local.
 
-The earlier two-month run read 811,019 rows and kept 142,633, then sampled 30,000. Its record is in [data_validation.json](reports/data_validation.json). No models have been trained and no model scores are available.
+The earlier two-month run read 811,019 rows and kept 142,633, then sampled 30,000. Its record is in [data_validation.json](reports/data_validation.json). No text classifier has been trained yet; the majority-class control below is the first comparison score.
 
 Tests cover cleaning, sequential drop counts, duplicates across chunks/files, rare-class sampling, repeatability, splits, and invalid inputs. When local outputs exist, tests also verify saved hashes, counts, class coverage, stratification, and duplicate IDs/text across splits. Local-data checks skip in CI because complaint data is not uploaded.
 
@@ -87,6 +87,73 @@ Tests cover cleaning, sequential drop counts, duplicates across chunks/files, ra
 The model population contains usable narratives after deduplication, not all CFPB complaints. Exact repeated text can come from distinct complaints using the same wording. Model deduplication helps prevent leakage; business counts use all analytics rows instead. Company counts are not failure rates: customer base sizes and submission rates are unavailable. Company response categories and timely responses do not prove resolution.
 
 Deduplication does not catch paraphrases. Random splits do not establish performance on future complaints. Rare-topic mapping uses cleaned label counts to define the dataset before splitting. Learned text preprocessing must use training data only. This module does not add PII masking.
+
+## Split audit and evaluation rules
+
+The active model dataset is now `data/processed-2025-v2`. The earlier `processed-2025` splits are retained for reproducibility and must not be used for new model comparisons. Business analytics still uses every source row.
+
+```powershell
+python -m data.refine_splits
+python -m ml.majority
+```
+
+Refinement refuses to overwrite existing outputs. It checks every pair in the original 30,000-row sample using cosine similarity of L2-normalized word unigram/bigram TF-IDF vectors. It uses scikit-learn's default word tokenization, without stopword removal or vocabulary pruning. Scores strictly above 0.9 are considered near duplicates. This is an exact all-pairs calculation under that lexical definition, not approximate neighbor search or a guarantee about semantic paraphrases. It does not audit every pair in the full 607,931-row model pool.
+
+The audit vocabulary and IDF are fitted once on the original sample and frozen for verification. They are only for dataset hygiene, never model features. Future model vectorizers must be fitted on the training split alone.
+
+| Audit result | Count |
+| --- | ---: |
+| All near-duplicate pairs, including within splits | 528,065 |
+| Cross-split pairs before cleanup | 244,926 |
+| Distinct rows in cross-split pairs | 5,112 |
+| Rows removed before rebuilding | 4,575 |
+| Rows retained | 25,425 |
+| Near-duplicate pairs after cleanup | 0 |
+
+Many pairs can involve the same row. A seeded complaint-ID order determines which rows survive: keep an available row and remove its direct near neighbors. This also removes within-split matches so rebuilding cannot move a retained pair across boundaries. It avoids collapsing an entire similarity chain when its endpoints are not similar. A second exhaustive pass verifies the retained vectors. No replacement rows are added, so the audited sample is smaller than the original 30,000.
+
+### Class counts
+
+| Class | Original train | Original val | Original test | Final train | Final val | Final test |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Checking or savings account | 1,627 | 349 | 348 | 1,571 | 337 | 336 |
+| Credit card | 1,352 | 290 | 290 | 1,345 | 288 | 288 |
+| Credit reporting or other personal consumer reports | 12,322 | 2,640 | 2,641 | 9,502 | 2,036 | 2,037 |
+| Debt collection | 2,597 | 556 | 557 | 2,519 | 540 | 539 |
+| Money transfer, virtual currency, or money service | 1,357 | 291 | 290 | 1,126 | 241 | 241 |
+| Mortgage | 484 | 104 | 104 | 484 | 104 | 104 |
+| Student loan | 370 | 79 | 79 | 362 | 78 | 77 |
+| Vehicle loan or lease | 402 | 86 | 86 | 402 | 86 | 86 |
+| Prepaid card | 132 | 28 | 28 | merged | merged | merged |
+| Debt or credit management | 89 | 19 | 19 | merged | merged | merged |
+| Payday/title/personal/advance loans | 269 | 58 | 57 | merged | merged | merged |
+| Other | 0 | 0 | 0 | 487 | 104 | 105 |
+
+Classes with fewer than 50 test examples are merged into `Other`. `Other` must meet the same minimum; if necessary the next smallest class is merged too. The three merged classes above now have 105 test examples together. The final split sizes are 17,798 train, 3,814 validation, and 3,813 test. This trades product detail for a less fragile per-class evaluation. The minimum is a dataset-design rule, not a claim of statistical significance.
+
+### Metrics and weights
+
+- Macro-F1 is the primary comparison and validation-selection metric for every model. Accuracy and per-class results are secondary. `ml.evaluate.score_predictions` fixes this reporting convention and includes all labels with zero for undefined F1.
+- Supervised scikit-learn training must use `ml.evaluate.fit_weighted`, which supplies balanced sample weights from training labels only. Do not combine it with an estimator's own `class_weight`, which would double-weight classes.
+- For later DistilBERT training, use `ml.evaluate.class_weights` in label-ID order as the loss weights. Zero-shot LLM classification has no training loss to weight; it still uses the same test labels and macro-F1.
+- The deliberately unweighted `most_frequent` control always predicts the largest training class. On the audited test set it scores **0.077379 macro-F1** and **53.4225% accuracy**. No text classifier has been trained yet.
+
+Measured scores and training weights are in [majority_baseline.json](reports/split_audit/majority_baseline.json). [audit.json](reports/split_audit/audit.json), class-count CSVs, removed-row IDs, and a compressed pair list document the cleanup. Raw text and audit vectors remain local.
+
+### Findings to keep in context
+
+Of the 1,222,050 narrative-bearing complaints, 614,119 (**50.25%**) were later exact copies after whitespace normalization and ignoring case. Template letters are a plausible explanation, but this has not been verified. All copies stay in business analytics.
+
+Credit reporting accounts for **88.38% of all 5,442,964 source complaints**. That is the business population, not the narrative-only or refined model population. The different populations must not be described as having the same class distribution.
+
+## Local review page
+
+```powershell
+python reports/build_preview.py
+python -m http.server 8501 --bind 127.0.0.1 --directory preview
+```
+
+Open http://localhost:8501 to inspect counts before/after cleanup, class weights, majority scores, and existing EDA charts. It serves only the `preview` directory, not raw complaint files. This is a static review page, not the planned full application. Regenerate it after changing reports.
 
 ## EDA and business insights
 
@@ -100,6 +167,8 @@ python notebooks/run_eda.py
 The runner uses the active Python environment for the notebook kernel. You can also open [eda.ipynb](notebooks/eda.ipynb) in VS Code and select the project's Python 3.11 interpreter.
 
 The notebook reads metadata columns in batches from the full analytics population. It produces monthly counts, product and company tables, recorded response categories, timely-response rates with explicit denominators, and a model-sample balance check. It exports CSV tables, four PNG charts, and [business_insights.md](reports/eda/business_insights.md). It does not print complaint text or claim to measure resolution, sentiment, or urgency.
+
+The notebook's sample-balance section documents the original pre-audit 30,000-row sample. It is historical; use `reports/split_audit` for the current class counts and benchmark. The business charts remain valid because analytics rows were not removed.
 
 Notebook execution checks source agreement, row totals, twelve-month coverage, and sample proportions. CI tests data code with small fixtures; it does not download the full dataset or execute the real-data notebook.
 

@@ -68,7 +68,7 @@ def test_rejects_too_small_class():
         make_splits(pd.DataFrame({"topic": ["A"] * 99 + ["B"]}), 100, min_class=1)
 
 
-@pytest.mark.parametrize("name", ["processed", "processed-2025"])
+@pytest.mark.parametrize("name", ["processed", "processed-2025", "processed-2025-v2"])
 def test_saved_real_data(name):
     folder = Path(__file__).resolve().parents[1] / "data" / name
     if not (folder / "manifest.json").exists():
