@@ -1,0 +1,386 @@
+{
+  "audit": {
+    "seed": 42,
+    "sample_size": 25425,
+    "source_directory": "data\\processed-2025",
+    "audit": {
+      "similarity": "L2-normalized word unigram/bigram TF-IDF cosine; default sklearn word tokenization; no stopword, document-frequency or vocabulary pruning",
+      "threshold": 0.9,
+      "comparison": "strictly greater than",
+      "scope": "all pairs in original 30,000-row sample; not the full 607,931-row pool",
+      "audit_idf": "Fitted once on original sample, frozen for verification; never reused as model preprocessing",
+      "source_manifest_sha256": "8a468a98196b2088bdabe4fefc9a8794cb50ddd74679a3aaed4e3f3591d40250",
+      "original_rows": 30000,
+      "all_near_pairs": 528065,
+      "cross_split_pairs_before": 244926,
+      "cross_split_rows_before": 5112,
+      "pairs_by_original_split": {
+        "train/test": 112452,
+        "train/val": 108966,
+        "val/test": 23508
+      },
+      "removed_rows": 4575,
+      "removed_by_old_split": {
+        "train": 3150,
+        "test": 729,
+        "val": 696
+      },
+      "retained_rows": 25425,
+      "near_pairs_after": 0,
+      "cross_split_pairs_after": 0,
+      "removal_rule": "Seeded ID order: keep each available row, discard its direct near neighbors; includes within-split pairs to keep rebuilding safe",
+      "label_mapping": {
+        "Checking or savings account": "Checking or savings account",
+        "Credit card": "Credit card",
+        "Credit reporting or other personal consumer reports": "Credit reporting or other personal consumer reports",
+        "Debt collection": "Debt collection",
+        "Debt or credit management": "Other",
+        "Money transfer, virtual currency, or money service": "Money transfer, virtual currency, or money service",
+        "Mortgage": "Mortgage",
+        "Payday loan, title loan, personal loan, or advance loan": "Other",
+        "Prepaid card": "Other",
+        "Student loan": "Student loan",
+        "Vehicle loan or lease": "Vehicle loan or lease"
+      },
+      "minimum_test_examples": 50,
+      "class_counts_before": {
+        "Checking or savings account": {
+          "train": 1627,
+          "val": 349,
+          "test": 348
+        },
+        "Credit card": {
+          "train": 1352,
+          "val": 290,
+          "test": 290
+        },
+        "Credit reporting or other personal consumer reports": {
+          "train": 12322,
+          "val": 2640,
+          "test": 2641
+        },
+        "Debt collection": {
+          "train": 2597,
+          "val": 556,
+          "test": 557
+        },
+        "Debt or credit management": {
+          "train": 89,
+          "val": 19,
+          "test": 19
+        },
+        "Money transfer, virtual currency, or money service": {
+          "train": 1357,
+          "val": 291,
+          "test": 290
+        },
+        "Mortgage": {
+          "train": 484,
+          "val": 104,
+          "test": 104
+        },
+        "Payday loan, title loan, personal loan, or advance loan": {
+          "train": 269,
+          "val": 58,
+          "test": 57
+        },
+        "Prepaid card": {
+          "train": 132,
+          "val": 28,
+          "test": 28
+        },
+        "Student loan": {
+          "train": 370,
+          "val": 79,
+          "test": 79
+        },
+        "Vehicle loan or lease": {
+          "train": 402,
+          "val": 86,
+          "test": 86
+        }
+      },
+      "class_counts_after": {
+        "Checking or savings account": {
+          "train": 1571,
+          "val": 337,
+          "test": 336
+        },
+        "Credit card": {
+          "train": 1345,
+          "val": 288,
+          "test": 288
+        },
+        "Credit reporting or other personal consumer reports": {
+          "train": 9502,
+          "val": 2036,
+          "test": 2037
+        },
+        "Debt collection": {
+          "train": 2519,
+          "val": 540,
+          "test": 539
+        },
+        "Money transfer, virtual currency, or money service": {
+          "train": 1126,
+          "val": 241,
+          "test": 241
+        },
+        "Mortgage": {
+          "train": 484,
+          "val": 104,
+          "test": 104
+        },
+        "Other": {
+          "train": 487,
+          "val": 104,
+          "test": 105
+        },
+        "Student loan": {
+          "train": 362,
+          "val": 78,
+          "test": 77
+        },
+        "Vehicle loan or lease": {
+          "train": 402,
+          "val": 86,
+          "test": 86
+        }
+      }
+    },
+    "splits": {
+      "train": {
+        "rows": 17798,
+        "topics": {
+          "Credit reporting or other personal consumer reports": 9502,
+          "Debt collection": 2519,
+          "Checking or savings account": 1571,
+          "Credit card": 1345,
+          "Money transfer, virtual currency, or money service": 1126,
+          "Other": 487,
+          "Mortgage": 484,
+          "Vehicle loan or lease": 402,
+          "Student loan": 362
+        },
+        "sha256": "d2960de0478e2f2320fe8520df56badd57e279dbdd19c3b5e0544f27c9b35f8b"
+      },
+      "val": {
+        "rows": 3814,
+        "topics": {
+          "Credit reporting or other personal consumer reports": 2036,
+          "Debt collection": 540,
+          "Checking or savings account": 337,
+          "Credit card": 288,
+          "Money transfer, virtual currency, or money service": 241,
+          "Mortgage": 104,
+          "Other": 104,
+          "Vehicle loan or lease": 86,
+          "Student loan": 78
+        },
+        "sha256": "d2ac33e0e96af1b2ed93f9603c8573770c1efa40c1972e9e0f962f3424aabae6"
+      },
+      "test": {
+        "rows": 3813,
+        "topics": {
+          "Credit reporting or other personal consumer reports": 2037,
+          "Debt collection": 539,
+          "Checking or savings account": 336,
+          "Credit card": 288,
+          "Money transfer, virtual currency, or money service": 241,
+          "Other": 105,
+          "Mortgage": 104,
+          "Vehicle loan or lease": 86,
+          "Student loan": 77
+        },
+        "sha256": "7e6ddce0457b3f82b5b397d0b006675e3ed4f3f8e44965a2deb58aa411de3a04"
+      }
+    },
+    "audit_vectors_sha256": "73695322971e15c3c1d1a719dbe04f93e3595b6d4d8e615f9c02cf5ffaa4a41d"
+  },
+  "majority": {
+    "primary_metric": "macro_f1",
+    "strategy": "most_frequent",
+    "data_directory": "data\\processed-2025-v2",
+    "manifest_sha256": "c647a73c026ddf811bfbabaee7a85fed84b11f5a96ff27694a05410c7ff500ab",
+    "majority_class": "Credit reporting or other personal consumer reports",
+    "class_weights_from_train": {
+      "Checking or savings account": 1.2587877501944975,
+      "Credit card": 1.4703015282940934,
+      "Credit reporting or other personal consumer reports": 0.2081199279683809,
+      "Debt collection": 0.7850557981562348,
+      "Money transfer, virtual currency, or money service": 1.7562660351292678,
+      "Mortgage": 4.085858585858586,
+      "Other": 4.0606890257814285,
+      "Student loan": 5.462860650705955,
+      "Vehicle loan or lease": 4.9192924267551135
+    },
+    "weight_policy": "Balanced weights for trainable models; majority control intentionally uses original training frequencies",
+    "scores": {
+      "val": {
+        "macro_f1": 0.07734093067426401,
+        "accuracy": 0.5338227582590456,
+        "per_class": {
+          "Checking or savings account": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 337.0
+          },
+          "Credit card": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 288.0
+          },
+          "Credit reporting or other personal consumer reports": {
+            "precision": 0.5338227582590456,
+            "recall": 1.0,
+            "f1-score": 0.696068376068376,
+            "support": 2036.0
+          },
+          "Debt collection": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 540.0
+          },
+          "Money transfer, virtual currency, or money service": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 241.0
+          },
+          "Mortgage": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 104.0
+          },
+          "Other": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 104.0
+          },
+          "Student loan": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 78.0
+          },
+          "Vehicle loan or lease": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 86.0
+          },
+          "accuracy": 0.5338227582590456,
+          "macro avg": {
+            "precision": 0.05931363980656062,
+            "recall": 0.1111111111111111,
+            "f1-score": 0.07734093067426401,
+            "support": 3814.0
+          },
+          "weighted avg": {
+            "precision": 0.2849667372352955,
+            "recall": 0.5338227582590456,
+            "f1-score": 0.3715771404497152,
+            "support": 3814.0
+          }
+        }
+      },
+      "test": {
+        "macro_f1": 0.07737891737891739,
+        "accuracy": 0.5342250196695515,
+        "per_class": {
+          "Checking or savings account": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 336.0
+          },
+          "Credit card": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 288.0
+          },
+          "Credit reporting or other personal consumer reports": {
+            "precision": 0.5342250196695515,
+            "recall": 1.0,
+            "f1-score": 0.6964102564102564,
+            "support": 2037.0
+          },
+          "Debt collection": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 539.0
+          },
+          "Money transfer, virtual currency, or money service": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 241.0
+          },
+          "Mortgage": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 104.0
+          },
+          "Other": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 105.0
+          },
+          "Student loan": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 77.0
+          },
+          "Vehicle loan or lease": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 86.0
+          },
+          "accuracy": 0.5342250196695515,
+          "macro avg": {
+            "precision": 0.05935833551883905,
+            "recall": 0.1111111111111111,
+            "f1-score": 0.07737891737891739,
+            "support": 3813.0
+          },
+          "weighted avg": {
+            "precision": 0.2853963716409327,
+            "recall": 0.5342250196695515,
+            "f1-score": 0.37203978292884665,
+            "support": 3813.0
+          }
+        }
+      }
+    }
+  },
+  "analytics": {
+    "rows": 5442964,
+    "with_narrative": 1222050,
+    "duplicate_text": 614119,
+    "months": {
+      "2025-01": 475783,
+      "2025-02": 335236,
+      "2025-03": 396973,
+      "2025-04": 406100,
+      "2025-05": 415182,
+      "2025-06": 412161,
+      "2025-07": 473191,
+      "2025-08": 495570,
+      "2025-09": 503850,
+      "2025-10": 519786,
+      "2025-11": 496658,
+      "2025-12": 512474
+    }
+  }
+}

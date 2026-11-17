@@ -1,0 +1,10 @@
+topic,train,val,test
+Checking or savings account,1571,337,336
+Credit card,1345,288,288
+Credit reporting or other personal consumer reports,9502,2036,2037
+Debt collection,2519,540,539
+"Money transfer, virtual currency, or money service",1126,241,241
+Mortgage,484,104,104
+Other,487,104,105
+Student loan,362,78,77
+Vehicle loan or lease,402,86,86
