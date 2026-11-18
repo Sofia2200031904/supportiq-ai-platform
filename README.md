@@ -1,6 +1,6 @@
 # SupportIQ
 
-SupportIQ is a customer complaint analysis project built one module at a time. Data preparation and an initial EDA notebook are implemented. Model training, search, the data question agent, and the dashboard are still planned.
+SupportIQ is a customer complaint analysis project built one module at a time. Data preparation, EDA, and classic ML topic models are implemented. Transformer training, search, the data question agent, and the dashboard are still being built.
 
 ## Setup
 
@@ -78,7 +78,7 @@ The source total equals dropped plus retained rows. Full source and split hashes
 
 The separate analytics export retains all 5,442,964 source rows, including 1,222,050 with narratives and 614,119 flagged later copies of narrative text. Its file hashes and monthly totals are in [analytics_validation_2025.json](reports/analytics_validation_2025.json). The current suite passed all 21 local tests, including exhaustive verification of the refined sample's saved similarity vectors. Real-data checks are skipped in CI because the data files stay local.
 
-The earlier two-month run read 811,019 rows and kept 142,633, then sampled 30,000. Its record is in [data_validation.json](reports/data_validation.json). No text classifier has been trained yet; the majority-class control below is the first comparison score.
+The earlier two-month run read 811,019 rows and kept 142,633, then sampled 30,000. Its record is in [data_validation.json](reports/data_validation.json). The majority-class control below provides a reference for the trained classic classifiers.
 
 Tests cover cleaning, sequential drop counts, duplicates across chunks/files, rare-class sampling, repeatability, splits, and invalid inputs. When local outputs exist, tests also verify saved hashes, counts, class coverage, stratification, and duplicate IDs/text across splits. Local-data checks skip in CI because complaint data is not uploaded.
 
@@ -134,9 +134,9 @@ Classes with fewer than 50 test examples are merged into `Other`. `Other` must m
 ### Metrics and weights
 
 - Macro-F1 is the primary comparison and validation-selection metric for every model. Accuracy and per-class results are secondary. `ml.evaluate.score_predictions` fixes this reporting convention and includes all labels with zero for undefined F1.
-- Supervised scikit-learn training must use `ml.evaluate.fit_weighted`, which supplies balanced sample weights from training labels only. Do not combine it with an estimator's own `class_weight`, which would double-weight classes.
+- Supervised scikit-learn training uses `class_weight="balanced"` in the pipeline estimator, or `ml.evaluate.fit_weighted` for a standalone estimator. Both derive weights from training labels only. Do not combine them, which would double-weight classes.
 - For later DistilBERT training, use `ml.evaluate.class_weights` in label-ID order as the loss weights. Zero-shot LLM classification has no training loss to weight; it still uses the same test labels and macro-F1.
-- The deliberately unweighted `most_frequent` control always predicts the largest training class. On the audited test set it scores **0.077379 macro-F1** and **53.4225% accuracy**. No text classifier has been trained yet.
+- The deliberately unweighted `most_frequent` control always predicts the largest training class. On the audited test set it scores **0.077379 macro-F1** and **53.4225% accuracy**. The classic classifier results are reported below.
 
 Measured scores and training weights are in [majority_baseline.json](reports/split_audit/majority_baseline.json). [audit.json](reports/split_audit/audit.json), class-count CSVs, removed-row IDs, and a compressed pair list document the cleanup. Raw text and audit vectors remain local.
 
@@ -171,6 +171,31 @@ The notebook reads metadata columns in batches from the full analytics populatio
 The notebook's sample-balance section documents the original pre-audit 30,000-row sample. It is historical; use `reports/split_audit` for the current class counts and benchmark. The business charts remain valid because analytics rows were not removed.
 
 Notebook execution checks source agreement, row totals, twelve-month coverage, and sample proportions. CI tests data code with small fixtures; it does not download the full dataset or execute the real-data notebook.
+
+## Classic ML baseline
+
+```powershell
+uv pip install -r requirements-ml.txt
+python -m ml.baseline
+```
+
+Both models are scikit-learn pipelines: word unigram/bigram TF-IDF followed by Logistic Regression or Linear SVM. TF-IDF uses sublinear term frequencies, a minimum document frequency of 2, and at most 50,000 features. It is fitted only on the 17,798 training rows. Both estimators use balanced class weights from the training labels.
+
+The search tries C = 0.5, 1, and 2 for each model. Validation macro-F1 selects each model's C and the overall recommendation before test evaluation. Ties prefer the smaller C. Models are not refitted on validation data. A convergence warning stops a run instead of silently accepting it.
+
+`ml.data.verify_splits` checks all three CSV hashes against the committed frozen audit before training and evaluation. Changing a local manifest does not bypass the check. The 17,798 / 3,814 / 3,813 split stays unchanged.
+
+Measured test results: Logistic Regression **0.7299 macro-F1 / 80.99% accuracy**; Linear SVM **0.7301 / 81.77%**; majority **0.0774 / 53.42%**. Logistic Regression is selected by validation macro-F1 (0.7290 versus SVM 0.7258). Full measurements are in [reports/baseline/results.md](reports/baseline/results.md). The merged Other class remains difficult: its F1 is 0.4600 for Logistic Regression and 0.4641 for SVM.
+
+The script saves selected pipelines as `artifacts/models/baseline/logreg.joblib`, `svm.joblib`, and `best.joblib`, with metadata and hashes. It verifies that reloading gives identical predictions. Run IDs, all six validation trials, test metrics, per-class F1, confusion matrices, and prediction IDs are saved under `reports/baseline`. Only aggregate metrics and prediction labels are committed; model files stay local.
+
+MLflow logs all trials, parameters, split hashes, selected models, and their test metrics. Its local database is `artifacts/mlflow/tracking.db`. To inspect it:
+
+```powershell
+python -m mlflow ui --backend-store-uri sqlite:///artifacts/mlflow/tracking.db --host 127.0.0.1 --port 5000
+```
+
+Latency is the median of three warm predictions on 1,000 fixed test texts, including TF-IDF preprocessing, with two CPU threads. Model loading and hash checks are excluded from the timer. These laptop measurements are not cloud performance guarantees. Hosting cost is not measured. An existing results/model directory is not overwritten; use fresh `--output` and `--models` paths for another run.
 
 ## Docker and CI
 

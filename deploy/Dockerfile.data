@@ -1,10 +1,11 @@
 FROM python:3.11-slim
 
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt requirements-ml.txt ./
+RUN pip install --no-cache-dir -r requirements-ml.txt
 COPY data/*.py ./data/
 COPY ml/*.py ./ml/
+COPY reports/split_audit/audit.json ./reports/split_audit/audit.json
 COPY tests/ ./tests/
 
 CMD ["python", "-m", "data.data_prep", "data/raw/complaints.csv"]

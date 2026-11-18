@@ -8,6 +8,7 @@ from sklearn.dummy import DummyClassifier
 
 from data.data_prep import file_hash
 from ml.evaluate import PRIMARY_METRIC, class_weights, score_predictions
+from ml.data import verify_splits
 
 DATA_DIR = Path("data/processed-2025-v2")
 
@@ -17,7 +18,7 @@ def main():
     parser.add_argument("--data", type=Path, default=DATA_DIR)
     parser.add_argument("--output", type=Path, default=Path("reports/split_audit/majority_baseline.json"))
     args = parser.parse_args()
-    manifest = json.loads((args.data / "manifest.json").read_text())
+    manifest = verify_splits(args.data)
     labels = {}
     for name in ("train", "val", "test"):
         path = args.data / f"{name}.csv"
@@ -26,6 +27,7 @@ def main():
         labels[name] = pd.read_csv(path, usecols=["topic"])["topic"].to_numpy()
     train = labels["train"]
     classes = np.unique(train).tolist()
+    verify_splits(args.data)
     model = DummyClassifier(strategy="most_frequent").fit(np.zeros((len(train), 1)), train)
     report = {"primary_metric": PRIMARY_METRIC, "strategy": "most_frequent", "data_directory": str(args.data),
               "manifest_sha256": file_hash(args.data / "manifest.json"),
@@ -33,6 +35,7 @@ def main():
               "weight_policy": "Balanced weights for trainable models; majority control intentionally uses original training frequencies",
               "scores": {}}
     for name in ("val", "test"):
+        verify_splits(args.data)
         pred = model.predict(np.zeros((len(labels[name]), 1)))
         report["scores"][name] = score_predictions(labels[name], pred, classes)
     args.output.parent.mkdir(parents=True, exist_ok=True)

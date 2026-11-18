@@ -13,6 +13,9 @@ def main():
     preview.mkdir(exist_ok=True)
     data = {"audit": audit, "majority": majority,
             "analytics": {key: analytics[key] for key in ("rows", "with_narrative", "duplicate_text", "months")}}
+    baseline = reports / "baseline" / "results.json"
+    if baseline.exists():
+        data["baseline"] = json.loads(baseline.read_text())
     (preview / "data.json").write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
     for name in ("monthly", "products", "companies"):
         shutil.copyfile(reports / "eda" / f"{name}.png", preview / f"{name}.png")
