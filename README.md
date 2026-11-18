@@ -209,6 +209,21 @@ docker run --rm --mount "type=bind,source=$($PWD.Path)/data,target=/app/data" su
 
 The output directory must be empty. Download archives on the host first. GitHub Actions tests with Python 3.11, builds this image, and runs tests inside it. Docker is not installed on the validation laptop.
 
+
+## DistilBERT on Colab
+
+Open `notebooks/distilbert_colab.ipynb` in Colab and select a GPU runtime. The notebook creates a Python 3.11 environment for training. GPU availability depends on your Colab account and current quota.
+
+From the project directory, package the existing frozen splits:
+
+```powershell
+Compress-Archive -Path data/processed-2025-v2/train.csv,data/processed-2025-v2/val.csv,data/processed-2025-v2/test.csv -DestinationPath frozen-splits.zip
+```
+
+Run the notebook cells in order and select that ZIP when prompted. Keep the ZIP outside Git. Validation macro-F1 selects the checkpoint. The notebook downloads a ZIP with the model, quantized ONNX, test metrics, and MLflow database. The optional publishing cell reads `HF_TOKEN` from Colab Secrets and uses the authenticated account name for `supportiq-distilbert`. Review the artifacts before running that cell.
+
+The Colab training and export have not yet been run. DistilBERT scores, model size, and Hub availability are pending. The 256-token cap can truncate longer narratives.
+
 ## Challenges I faced
 
 - [Fill in a problem you encountered, how you investigated it, and what happened.]

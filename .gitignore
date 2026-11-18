@@ -11,5 +11,6 @@ data/analytics-*/
 pytest-cache-files-*/
 .ipynb_checkpoints/
 artifacts/
+frozen-splits.zip
 mlruns/
 mlflow.db*
