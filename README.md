@@ -210,6 +210,17 @@ docker run --rm --mount "type=bind,source=$($PWD.Path)/data,target=/app/data" su
 The output directory must be empty. Download archives on the host first. GitHub Actions tests with Python 3.11, builds this image, and runs tests inside it. Docker is not installed on the validation laptop.
 
 
+### Where the classic models struggle
+
+| Model | Lowest per-class F1 | Second-lowest | Third-lowest |
+| --- | --- | --- | --- |
+| Logistic Regression | Other (0.4600) | Vehicle loan or lease (0.6845) | Student loan (0.6897) |
+| Linear SVM | Other (0.4641) | Student loan (0.6410) | Debt collection (0.7059) |
+
+Both models most often confused credit reporting with debt collection. Logistic Regression predicted debt collection for 154 credit-reporting complaints and credit reporting for 93 debt-collection complaints (247 total). The SVM made 115 and 122 errors in those directions (237 total). The next most common pair was checking or savings accounts versus money transfers (68 and 73 errors, respectively). These pair counts sum errors in both directions.
+
+See the [baseline report](reports/baseline/results.md) for each model's per-class F1 and confusion matrix.
+
 ## DistilBERT on Colab
 
 Open `notebooks/distilbert_colab.ipynb` in Colab and select a GPU runtime. The notebook creates a Python 3.11 environment for training. GPU availability depends on your Colab account and current quota.
